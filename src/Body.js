@@ -2,8 +2,8 @@ import React from 'react'
 
 export default function Body() {
   return (
-    <div>
-        
+    <div className="body-container">
+
     </div>
   )
 }
