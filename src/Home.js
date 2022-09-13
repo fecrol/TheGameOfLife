@@ -9,10 +9,8 @@ export default function Home() {
     <div className="main-container centre">
         <Header />
         <Body />
-        <div className="bottom-container">
-            <Buttons />
-            <Footer />
-        </div>
+        <Buttons />
+        <Footer />
     </div>
   )
 }
