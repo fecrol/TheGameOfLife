@@ -3,14 +3,17 @@ import React, {useState, useEffect} from 'react'
 export default function Tile({dimensions}) {
     
   const [tilesArr, setTilesArr] = useState([])
+  const [clicker, setClicker] = useState(false)
 
-  const numOfRows = Math.floor(dimensions.height / 16)
-  const numOfColumns = Math.floor(dimensions.width / 16)
+  const tileSize = 16
+  const numOfRows = Math.floor(dimensions.height / tileSize)
+  const numOfColumns = Math.floor(dimensions.width / tileSize)
 
   useEffect(() => {
+
     const tiles = generateTiles()
     setTilesArr([...tiles])
-  }, [numOfColumns])
+  }, [numOfColumns, numOfRows])
   
   const generateTiles = () => {
 
@@ -20,14 +23,12 @@ export default function Tile({dimensions}) {
     for(let y = 0; y < numOfRows; y++) {
 
       for(let x = 0; x < numOfColumns; x++) {
-        
-        const element = <div key={`tile${key}`} className="tile"></div>
 
         const tile = {
-          element,
           x,
           y,
-          active: false
+          active: false,
+          key: `tile${key}`
         }
 
         key++
@@ -37,10 +38,17 @@ export default function Tile({dimensions}) {
 
     return tiles
   }
+
+  const toggleTile = (tile) => {
+
+    tile.active = tile.active ? false : true
+    setClicker(clicker ? false : true)
+  }
   
   return (
+
     tilesArr.map((tile) => {
-      return tile.element
+      return <div key={tile.key} className={`tile ${tile.active ? "active" : "inactive"}`} style={{width: tileSize + "px", height: tileSize + "px"}} onClick={() => {toggleTile(tile)}}></div>
     })
   )
 }
