@@ -4,6 +4,7 @@ import Tiles from './Tiles'
 export default function Body() {
 
   const [dimensions, setDimensions] = useState({})
+  const [winDimensions, setWinDimensions] = useState({windowWidth: window.innerWidth, windowHeight: window.innerHeight})
   const ref = useRef(false)
   
   useEffect(() => {
@@ -16,7 +17,18 @@ export default function Body() {
     const tileContainerDimensions = {height: containerHeight, width: conatinerWidth}
 
     setDimensions(tileContainerDimensions)
+  }, [winDimensions])
+
+  useEffect(() => {
+    window.addEventListener('resize', setWindowDimensions);
+    return () => {
+      window.removeEventListener('resize', setWindowDimensions)
+    }
   }, [])
+
+  const setWindowDimensions = () => {
+    setWinDimensions({windowWidth: window.innerWidth, windowHeight: window.innerHeight})
+  }
 
   return (
     <div className="body-container centre" ref={ref}>
