@@ -1,11 +1,11 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React from 'react'
 import Tile from './Tile'
 
-export default function Tiles({dimensions}) {
+export default function Tiles({dimensions, resetBtnClicked}) {
 
   return (
     <div className="tiles centre">
-      <Tile dimensions={dimensions} />
+      <Tile dimensions={dimensions} resetBtnClicked={resetBtnClicked} />
     </div>
   )
 }

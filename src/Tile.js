@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-export default function Tile({dimensions}) {
+export default function Tile({dimensions, resetBtnClicked}) {
     
   const [tilesArr, setTilesArr] = useState([])
   const [clicker, setClicker] = useState(false)
@@ -10,10 +10,15 @@ export default function Tile({dimensions}) {
   const numOfColumns = Math.floor(dimensions.width / tileSize)
 
   useEffect(() => {
-
     const tiles = generateTiles()
     setTilesArr([...tiles])
   }, [numOfColumns, numOfRows])
+
+  useEffect(() => {
+    
+    resetTiles()
+    setClicker(clicker ? false : true)
+  }, [resetBtnClicked])
   
   const generateTiles = () => {
 
@@ -37,6 +42,19 @@ export default function Tile({dimensions}) {
     }
 
     return tiles
+  }
+
+  const resetTiles = () => {
+
+    const tiles = tilesArr
+
+    if(tiles[0] != undefined) {
+      tiles.forEach((tile) => {
+        if(tile.active) {
+          tile.active = false
+        }
+      })
+    }
   }
 
   const toggleTile = (tile) => {
