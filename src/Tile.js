@@ -31,6 +31,8 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
     
     for(let y = 0; y < numOfRows; y++) {
 
+      const row = []
+
       for(let x = 0; x < numOfColumns; x++) {
 
         const tile = {
@@ -41,8 +43,10 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
         }
 
         key++
-        tiles.push(tile)
+        row.push(tile)
       }
+      
+      tiles.push(row)
     }
 
     return tiles
@@ -53,10 +57,12 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
     const tiles = tilesArr
 
     if(tiles[0] != undefined) {
-      tiles.forEach((tile) => {
-        if(tile.active) {
-          tile.active = false
-        }
+      tiles.forEach((row) => {
+        row.forEach((tile) => {
+          if(tile.active) {
+            tile.active = false
+          }
+        })
       })
     }
   }
@@ -98,8 +104,12 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
   
   return (
 
-    tilesArr.map((tile) => {
-      return <div key={tile.key} className={`tile ${tile.active ? "active" : "inactive"}`} style={{width: tileSize + "px", height: tileSize + "px"}} onClick={() => {toggleTile(tile)}}></div>
+    tilesArr.map((row) => {
+      return (
+        row.map((tile) => {
+          return <div key={tile.key} className={`tile ${tile.active ? "active" : "inactive"}`} style={{width: tileSize + "px", height: tileSize + "px"}} onClick={() => {toggleTile(tile)}}></div>
+        })
+      )
     })
   )
 }
