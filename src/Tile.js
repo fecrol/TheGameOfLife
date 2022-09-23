@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-export default function Tile({dimensions, resetBtnClicked}) {
+export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
     
   const [tilesArr, setTilesArr] = useState([])
   const [clicker, setClicker] = useState(false)
@@ -19,6 +19,10 @@ export default function Tile({dimensions, resetBtnClicked}) {
     resetTiles()
     setClicker(clicker ? false : true)
   }, [resetBtnClicked])
+
+  useEffect(() => {
+    changeTileState()
+  }, [nextBtnClicked])
   
   const generateTiles = () => {
 
@@ -55,6 +59,35 @@ export default function Tile({dimensions, resetBtnClicked}) {
         }
       })
     }
+  }
+
+  const changeTileState = () => {
+
+    const currentTiles = tilesArr
+    const updatedStateTiles = tilesArr
+
+    let updateTileState = false
+    let numOfAdjacentActiveTiles = 0
+
+    for(let i = 0; i < numOfColumns; i++) {
+      for(let x = i - numOfColumns - 1; x <= numOfColumns + i; x += numOfColumns) {
+        for(let y = x; y <= x + 2; y++) {
+          
+          const tileIsValid = currentTiles.includes(currentTiles[y]) && y !== i && i % numOfColumns !== 0
+
+          if(tileIsValid) {
+            if(currentTiles[y].active) {
+              numOfAdjacentActiveTiles += 1
+            }
+          }
+        }
+      }
+      console.log(numOfAdjacentActiveTiles)
+      numOfAdjacentActiveTiles = 0
+    }
+
+    // console.log(numOfAdjacentActiveTiles)
+    // numOfAdjacentActiveTiles = 0
   }
 
   const toggleTile = (tile) => {

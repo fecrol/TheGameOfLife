@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react'
 import Tiles from './Tiles'
 
-export default function Body({resetBtnClicked}) {
+export default function Body({resetBtnClicked, nextBtnClicked}) {
 
   const [dimensions, setDimensions] = useState({})
   const [winDimensions, setWinDimensions] = useState({windowWidth: window.innerWidth, windowHeight: window.innerHeight})
@@ -32,7 +32,7 @@ export default function Body({resetBtnClicked}) {
 
   return (
     <div className="body-container centre" ref={ref}>
-      <Tiles dimensions={dimensions} resetBtnClicked={resetBtnClicked} />
+      <Tiles dimensions={dimensions} resetBtnClicked={resetBtnClicked} nextBtnClicked={nextBtnClicked} />
     </div>
   )
 }
