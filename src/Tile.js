@@ -21,7 +21,8 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
   }, [resetBtnClicked])
 
   useEffect(() => {
-    changeTileState()
+    const updatedTiles = updateTileState()
+    setTilesArr(updatedTiles)
   }, [nextBtnClicked])
   
   const generateTiles = () => {
@@ -67,33 +68,56 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
     }
   }
 
-  const changeTileState = () => {
+  const updateTileState = () => {
 
-    const currentTiles = tilesArr
-    const updatedStateTiles = tilesArr
-
-    let updateTileState = false
+    let updatedStateTiles = JSON.parse(JSON.stringify(tilesArr))
     let numOfAdjacentActiveTiles = 0
 
-    for(let i = 0; i < numOfColumns; i++) {
-      for(let x = i - numOfColumns - 1; x <= numOfColumns + i; x += numOfColumns) {
-        for(let y = x; y <= x + 2; y++) {
-          
-          const tileIsValid = currentTiles.includes(currentTiles[y]) && y !== i && i % numOfColumns !== 0
+    if(tilesArr[0] !== undefined) {
 
-          if(tileIsValid) {
-            if(currentTiles[y].active) {
-              numOfAdjacentActiveTiles += 1
+      for(let row = 0; row < numOfRows; row++) {
+
+        for(let col = 0; col < numOfColumns; col++) {
+
+          const tile = tilesArr[row][col]
+  
+          for(let y = -1; y <= 1; y++) {
+  
+            for(let x = -1; x <= 1; x++) {
+  
+              const validRow = tilesArr.includes(tilesArr[row + y])
+  
+              if(validRow) {
+  
+                const validCol = tilesArr[row + y].includes(tilesArr[row + y][col + x])
+  
+                if(validCol) {
+                  
+                  const currentTile = tilesArr[row + y][col + x]
+  
+                  if(currentTile.active && currentTile !== tile) {
+  
+                    numOfAdjacentActiveTiles += 1
+                  }
+                }
+              }
             }
           }
+  
+          if(tile.active && numOfAdjacentActiveTiles < 2 || tile.active && numOfAdjacentActiveTiles > 3) {
+            updatedStateTiles[row][col].active = false
+          }
+
+          if(!tile.active && numOfAdjacentActiveTiles === 3) {
+            updatedStateTiles[row][col].active = true
+          }
+
+          numOfAdjacentActiveTiles = 0
         }
       }
-      console.log(numOfAdjacentActiveTiles)
-      numOfAdjacentActiveTiles = 0
     }
 
-    // console.log(numOfAdjacentActiveTiles)
-    // numOfAdjacentActiveTiles = 0
+    return updatedStateTiles
   }
 
   const toggleTile = (tile) => {
