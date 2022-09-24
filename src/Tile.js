@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 
-export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
+export default function Tile({dimensions, resetBtnClicked, nextBtnClicked, playing, setPlaying, running}) {
     
   const [tilesArr, setTilesArr] = useState([])
   const [clicker, setClicker] = useState(false)
@@ -21,9 +21,29 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
   }, [resetBtnClicked])
 
   useEffect(() => {
-    const updatedTiles = updateTileState()
+    const updatedTiles = updateTileState([...tilesArr])
     setTilesArr(updatedTiles)
   }, [nextBtnClicked])
+
+  useEffect(() => {
+    play([...tilesArr])
+  }, [playing])
+
+  const play = async (tiles) => {
+
+    if(running.current) {
+
+      setTilesArr([...updateTileState([...tiles])])
+      await wait(300)
+      setPlaying(playing === "yay" ? "nay": "yay")
+    }
+  }
+  
+  const wait = (timeout) => {
+    return new Promise((resolve) => {
+      setTimeout(resolve, timeout)
+    })
+  }
   
   const generateTiles = () => {
 
@@ -57,7 +77,7 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
 
     const tiles = tilesArr
 
-    if(tiles[0] != undefined) {
+    if(tiles[0] !== undefined) {
       tiles.forEach((row) => {
         row.forEach((tile) => {
           if(tile.active) {
@@ -68,32 +88,32 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
     }
   }
 
-  const updateTileState = () => {
+  const updateTileState = (tiles) => {
 
-    let updatedStateTiles = JSON.parse(JSON.stringify(tilesArr))
+    let updatedStateTiles = JSON.parse(JSON.stringify(tiles))
     let numOfAdjacentActiveTiles = 0
 
-    if(tilesArr[0] !== undefined) {
+    if(tiles !== undefined) {
 
       for(let row = 0; row < numOfRows; row++) {
 
         for(let col = 0; col < numOfColumns; col++) {
 
-          const tile = tilesArr[row][col]
+          const tile = tiles[row][col]
   
           for(let y = -1; y <= 1; y++) {
   
             for(let x = -1; x <= 1; x++) {
   
-              const validRow = tilesArr.includes(tilesArr[row + y])
+              const validRow = tiles.includes(tiles[row + y])
   
               if(validRow) {
   
-                const validCol = tilesArr[row + y].includes(tilesArr[row + y][col + x])
+                const validCol = tiles[row + y].includes(tiles[row + y][col + x])
   
                 if(validCol) {
                   
-                  const currentTile = tilesArr[row + y][col + x]
+                  const currentTile = tiles[row + y][col + x]
   
                   if(currentTile.active && currentTile !== tile) {
   
@@ -104,7 +124,7 @@ export default function Tile({dimensions, resetBtnClicked, nextBtnClicked}) {
             }
           }
   
-          if(tile.active && numOfAdjacentActiveTiles < 2 || tile.active && numOfAdjacentActiveTiles > 3) {
+          if((tile.active && numOfAdjacentActiveTiles < 2) || (tile.active && numOfAdjacentActiveTiles > 3)) {
             updatedStateTiles[row][col].active = false
           }
 
